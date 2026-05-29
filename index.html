@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ServiceName — Поставки промышленного оборудования</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<style>
+:root {
+  --navy: #0d1b2a;
+  --navy2: #1b2d42;
+  --steel: #2563a8;
+  --steel-light: #3b82f6;
+  --accent: #f59e0b;
+  --accent2: #fbbf24;
+  --light: #f0f4f8;
+  --muted: #8a9ab0;
+  --white: #ffffff;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Manrope', sans-serif; background: var(--white); color: var(--navy); overflow-x: hidden; }
+h1, h2, h3, h4, .display-font { font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.04em; }
+
+.navbar-custom {
+  background: var(--navy);
+  padding: 0;
+  position: sticky; top: 0; z-index: 1000;
+  border-bottom: 2px solid var(--accent);
+}
+.navbar-brand-text {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.7rem;
+  color: var(--white) !important;
+  letter-spacing: 0.08em;
+  line-height: 1;
+}
+.navbar-brand-text span { color: var(--accent); }
+.topbar {
+  background: var(--navy2);
+  font-size: 0.8rem;
+  color: var(--muted);
+  padding: 6px 0;
+}
+.topbar a { color: var(--muted); text-decoration: none; }
+.topbar a:hover { color: var(--accent); }
+.nav-link-custom {
+  color: rgba(255,255,255,0.82) !important;
+  font-weight: 600;
+  font-size: 0.88rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 1.2rem 1rem !important;
+  transition: color 0.2s;
+}
+.nav-link-custom:hover, .nav-link-custom.active { color: var(--accent) !important; }
+.btn-nav-cta {
+  background: var(--accent);
+  color: var(--navy);
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border: none;
+  padding: 0.55rem 1.4rem;
+  border-radius: 2px;
+  transition: background 0.2s, transform 0.15s;
+}
+.btn-nav-cta:hover { background: var(--accent2); transform: translateY(-1px); }
+.navbar-toggler { border: none; color: var(--accent) !important; }
+.navbar-toggler-icon { filter: brightness(0) saturate(100%) invert(72%) sepia(78%) saturate(600%) hue-rotate(3deg); }
+
+.hero-section {
+  position: relative;
+  background: var(--navy);
+  min-height: 580px;
+  display: flex; align-items: center;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute; inset: 0;
+  background-image: url('https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=1400&q=80');
+  background-size: cover; background-position: center;
+  opacity: 0.22;
+}
+.hero-diagonal {
+  position: absolute; right: 0; top: 0; bottom: 0;
+  width: 45%;
+  background: rgba(37, 99, 168, 0.18);
+  clip-path: polygon(12% 0, 100% 0, 100% 100%, 0% 100%);
+}
+.hero-accent-line {
+  position: absolute; left: 0; top: 0; bottom: 0;
+  width: 4px;
+  background: var(--accent);
+}
+.hero-content { position: relative; z-index: 2; }
+.hero-eyebrow {
+  display: inline-block;
+  background: var(--accent);
+  color: var(--navy);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 4px 14px;
+  margin-bottom: 1rem;
+  border-radius: 2px;
+}
+.hero-title {
+  font-size: clamp(2.8rem, 6vw, 5.2rem);
+  color: var(--white);
+  line-height: 0.95;
+  margin-bottom: 1.2rem;
+}
+.hero-title .hl { color: var(--accent); }
+.hero-subtitle {
+  color: rgba(255,255,255,0.72);
+  font-size: 1.05rem;
+  line-height: 1.6;
+  max-width: 520px;
+  margin-bottom: 2rem;
+}
+.btn-hero-primary {
+  background: var(--accent);
+  color: var(--navy);
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.8rem 2rem;
+  border: none;
+  border-radius: 2px;
+  text-decoration: none;
+  display: inline-block;
+  transition: background 0.2s, transform 0.15s;
+}
+.btn-hero-primary:hover { background: var(--accent2); transform: translateY(-2px); color: var(--navy); }
+.btn-hero-ghost {
+  background: transparent;
+  color: var(--white);
+  font-weight: 600;
+  font-size: 0.9rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.78rem 1.8rem;
+  border: 1.5px solid rgba(255,255,255,0.35);
+  border-radius: 2px;
+  text-decoration: none;
+  display: inline-block;
+  transition: border-color 0.2s, color 0.2s;
+}
+.btn-hero-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+.stats-row {
+  background: var(--accent);
+  padding: 1.2rem 0;
+}
+.stat-item { text-align: center; }
+.stat-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.4rem;
+  color: var(--navy);
+  letter-spacing: 0.06em;
+  line-height: 1;
+}
+.stat-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(13,27,42,0.72);
+}
+
+.section-eyebrow {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--steel);
+  margin-bottom: 0.5rem;
+}
+.section-title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  color: var(--navy);
+  line-height: 1;
+  margin-bottom: 1rem;
+}
+.section-lead {
+  font-size: 1rem;
+  color: #4a5568;
+  line-height: 1.7;
+  max-width: 560px;
+}
+
+.catalog-section { background: var(--light); padding: 80px 0; }
+.cat-card {
+  background: var(--white);
+  border-radius: 4px;
+  overflow: hidden;
+  transition: transform 0.22s, box-shadow 0.22s;
+  height: 100%;
+  display: flex; flex-direction: column;
+  border: 1px solid rgba(0,0,0,0.06);
+}
+.cat-card:hover { transform: translateY(-5px); box-shadow: 0 12px 32px rgba(13,27,42,0.13); }
+.cat-card-img {
+  height: 190px;
+  overflow: hidden;
+  position: relative;
+}
+.cat-card-img img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s;
+}
+.cat-card:hover .cat-card-img img { transform: scale(1.05); }
+.cat-card-tag {
+  position: absolute; top: 12px; left: 12px;
+  background: var(--steel);
+  color: var(--white);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 2px;
+}
+.cat-card-body { padding: 1.2rem; flex: 1; display: flex; flex-direction: column; }
+.cat-card-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.35rem;
+  color: var(--navy);
+  letter-spacing: 0.04em;
+  margin-bottom: 0.4rem;
+}
+.cat-card-desc { font-size: 0.85rem; color: #64748b; line-height: 1.55; flex: 1; }
+.cat-card-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 0.82rem; font-weight: 700;
+  color: var(--steel);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  margin-top: 1rem;
+  transition: color 0.2s;
+}
+.cat-card-link:hover { color: var(--accent); }
+
+.why-section { padding: 80px 0; background: var(--white); }
+.why-img-wrap {
+  position: relative;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.why-img-wrap img { width: 100%; height: 420px; object-fit: cover; display: block; }
+.why-img-badge {
+  position: absolute; bottom: 24px; right: -20px;
+  background: var(--accent);
+  color: var(--navy);
+  padding: 1rem 1.4rem;
+  border-radius: 4px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2rem;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+}
+.why-img-badge small { display: block; font-family: 'Manrope', sans-serif; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+.why-item { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 1.6rem; }
+.why-icon {
+  width: 48px; height: 48px; min-width: 48px;
+  background: var(--light);
+  border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem;
+  color: var(--steel);
+  transition: background 0.2s;
+}
+.why-item:hover .why-icon { background: var(--accent); color: var(--navy); }
+.why-item-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 3px; color: var(--navy); }
+.why-item-desc { font-size: 0.85rem; color: #64748b; line-height: 1.55; }
+
+.process-section { background: var(--navy); padding: 80px 0; }
+.process-section .section-title { color: var(--white); }
+.process-section .section-eyebrow { color: var(--accent); }
+.process-step {
+  position: relative;
+  padding: 1.8rem;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 4px;
+  height: 100%;
+  transition: background 0.2s;
+}
+.process-step:hover { background: rgba(255,255,255,0.09); }
+.step-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 3.5rem;
+  color: var(--accent);
+  opacity: 0.35;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+.step-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; color: var(--white); letter-spacing: 0.04em; margin-bottom: 0.5rem; }
+.step-desc { font-size: 0.85rem; color: rgba(255,255,255,0.6); line-height: 1.6; }
+
+.gallery-section { padding: 80px 0; background: var(--light); }
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: 220px 220px;
+  gap: 8px;
+}
+.g-item { overflow: hidden; border-radius: 4px; }
+.g-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; display: block; }
+.g-item:hover img { transform: scale(1.06); }
+.g-item.big {
+  grid-column: 1 / 2;
+  grid-row: 1 / 3;
+}
+@media (max-width: 768px) {
+  .gallery-grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
+  .g-item.big { grid-column: 1 / 3; grid-row: auto; height: 200px; }
+  .g-item { height: 160px; }
+}
+
+.clients-section { background: var(--white); padding: 50px 0; border-top: 1px solid var(--light); border-bottom: 1px solid var(--light); }
+.client-logo {
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0.45; transition: opacity 0.2s;
+  padding: 0.5rem;
+}
+.client-logo:hover { opacity: 0.85; }
+.client-logo-text {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.5rem;
+  color: var(--navy2);
+  letter-spacing: 0.1em;
+  border: 2px solid currentColor;
+  padding: 4px 14px;
+  border-radius: 2px;
+}
+
+.cta-section {
+  position: relative;
+  background: var(--steel);
+  padding: 70px 0;
+  overflow: hidden;
+}
+.cta-bg {
+  position: absolute; inset: 0;
+  background-image: url('https://images.unsplash.com/photo-1581091012184-7e0cdfbb6797?w=1200&q=70');
+  background-size: cover; background-position: center;
+  opacity: 0.12;
+}
+.cta-section .section-title { color: var(--white); }
+.cta-section p { color: rgba(255,255,255,0.8); font-size: 1.05rem; max-width: 540px; line-height: 1.65; }
+.btn-cta-white {
+  background: var(--white);
+  color: var(--navy);
+  font-weight: 700; font-size: 0.88rem;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 0.85rem 2rem; border: none; border-radius: 2px;
+  text-decoration: none; display: inline-block;
+  transition: background 0.2s, transform 0.15s;
+}
+.btn-cta-white:hover { background: var(--accent); color: var(--navy); transform: translateY(-2px); }
+.btn-cta-outline {
+  background: transparent;
+  color: var(--white);
+  font-weight: 600; font-size: 0.88rem;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 0.83rem 1.8rem;
+  border: 1.5px solid rgba(255,255,255,0.45);
+  border-radius: 2px;
+  text-decoration: none; display: inline-block;
+  transition: border-color 0.2s, color 0.2s;
+}
+.btn-cta-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+.contact-section { background: var(--white); padding: 80px 0; }
+.form-card {
+  background: var(--light);
+  border-radius: 4px;
+  padding: 2.5rem 2rem;
+}
+.form-label-custom { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--navy2); margin-bottom: 6px; }
+.form-control-custom {
+  background: var(--white);
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 2px;
+  padding: 0.7rem 1rem;
+  font-size: 0.9rem;
+  font-family: 'Manrope', sans-serif;
+  color: var(--navy);
+  width: 100%;
+  transition: border-color 0.2s;
+  outline: none;
+}
+.form-control-custom:focus { border-color: var(--steel); }
+textarea.form-control-custom { resize: vertical; min-height: 110px; }
+.btn-submit {
+  background: var(--navy);
+  color: var(--white);
+  font-weight: 700; font-size: 0.88rem;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 0.85rem 2.4rem; border: none; border-radius: 2px;
+  cursor: pointer; width: 100%;
+  transition: background 0.2s, transform 0.15s;
+}
+.btn-submit:hover { background: var(--steel); transform: translateY(-1px); }
+.contact-info-item { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 1.6rem; }
+.contact-icon {
+  width: 44px; height: 44px; min-width: 44px;
+  background: var(--navy);
+  border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--accent);
+  font-size: 1.2rem;
+}
+.contact-info-label { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 2px; }
+.contact-info-value { font-size: 0.95rem; font-weight: 600; color: var(--navy); }
+.contact-info-value a { color: var(--navy); text-decoration: none; }
+.contact-info-value a:hover { color: var(--steel); }
+.map-placeholder {
+  background: var(--light);
+  border-radius: 4px;
+  height: 240px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border: 1px solid rgba(0,0,0,0.07);
+  overflow: hidden;
+}
+
+footer {
+  background: var(--navy);
+  color: rgba(255,255,255,0.6);
+  padding: 50px 0 24px;
+  border-top: 2px solid var(--accent);
+}
+.footer-brand { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--white); letter-spacing: 0.08em; margin-bottom: 0.8rem; }
+.footer-brand span { color: var(--accent); }
+.footer-desc { font-size: 0.85rem; line-height: 1.65; max-width: 300px; color: rgba(255,255,255,0.5); }
+.footer-heading { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; }
+footer a { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.88rem; transition: color 0.2s; }
+footer a:hover { color: var(--accent); }
+footer ul { list-style: none; padding: 0; }
+footer ul li { margin-bottom: 0.5rem; }
+.footer-bottom { border-top: 1px solid rgba(255,255,255,0.08); padding-top: 1.2rem; margin-top: 2.5rem; font-size: 0.8rem; color: rgba(255,255,255,0.35); }
+
+.divider-accent { width: 48px; height: 3px; background: var(--accent); margin: 1rem 0 1.6rem; border-radius: 2px; }
+.success-toast { display: none; background: #16a34a; color: white; padding: 12px 20px; border-radius: 4px; font-size: 0.9rem; font-weight: 600; margin-top: 12px; }
+
+@media (max-width: 991px) {
+  .why-img-badge { right: 10px; }
+  .hero-section { min-height: 460px; }
+}
+@media (max-width: 767px) {
+  .why-img-wrap img { height: 280px; }
+  .why-img-badge { bottom: 16px; right: 16px; font-size: 1.5rem; }
+  .stats-row .col-6.col-md-3 { border-bottom: 1px solid rgba(13,27,42,0.12); }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <div class="d-flex gap-3">
+        <span><i class="bi bi-clock me-1"></i>Пн–Пт: 9:00–18:00</span>
+        <span class="d-none d-md-inline"><i class="bi bi-envelope me-1"></i><a href="mailto:info@servicename-group.ru">info@servicename-group.ru</a></span>
+      </div>
+      <div>
+        <a href="tel:88009999999"><i class="bi bi-telephone me-1"></i>8 800 999-99-99</a>
+        <span class="ms-3 d-none d-sm-inline" style="color: #4a5568; font-size: 0.75rem;">Звонок бесплатный</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<nav class="navbar navbar-expand-lg navbar-custom">
+  <div class="container">
+    <a class="navbar-brand navbar-brand-text" href="#">Service<span>Name</span></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="mainNav">
+      <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
+        <li class="nav-item"><a class="nav-link nav-link-custom active" href="#">Главная</a></li>
+        <li class="nav-item"><a class="nav-link nav-link-custom" href="#catalog">Каталог</a></li>
+        <li class="nav-item"><a class="nav-link nav-link-custom" href="#about">О компании</a></li>
+        <li class="nav-item"><a class="nav-link nav-link-custom" href="#contact">Контакты</a></li>
+        <li class="nav-item ms-lg-3">
+          <a href="#contact" class="btn btn-nav-cta">Запросить цену</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<section class="hero-section">
+  <div class="hero-bg"></div>
+  <div class="hero-diagonal"></div>
+  <div class="hero-accent-line"></div>
+  <div class="container hero-content py-5">
+    <div class="row">
+      <div class="col-lg-7">
+        <div class="hero-eyebrow">Надёжный поставщик с 2012 года</div>
+        <h1 class="hero-title">
+          ПОСТАВКИ<br>
+          <span class="hl">ПРОМЫШЛЕННОГО</span><br>
+          ОБОРУДОВАНИЯ
+        </h1>
+        <p class="hero-subtitle">
+          Металлопрокат, кабельная продукция, промышленные станки и запасные части. Прямые поставки от производителей по всей России и СНГ.
+        </p>
+        <div class="d-flex flex-wrap gap-3">
+          <a href="#catalog" class="btn-hero-primary">Перейти в каталог</a>
+          <a href="#contact" class="btn-hero-ghost">Связаться с нами</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="stats-row">
+  <div class="container">
+    <div class="row g-0">
+      <div class="col-6 col-md-3 py-2">
+        <div class="stat-item">
+          <div class="stat-num">12+</div>
+          <div class="stat-label">лет на рынке</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3 py-2">
+        <div class="stat-item">
+          <div class="stat-num">800+</div>
+          <div class="stat-label">наименований</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3 py-2">
+        <div class="stat-item">
+          <div class="stat-num">500+</div>
+          <div class="stat-label">клиентов по РФ</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3 py-2">
+        <div class="stat-item">
+          <div class="stat-num">24ч</div>
+          <div class="stat-label">обработка заявки</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CATALOG -->
+<section class="catalog-section" id="catalog">
+  <div class="container">
+    <div class="row mb-5">
+      <div class="col-lg-6">
+        <span class="section-eyebrow">Ассортимент</span>
+        <h2 class="section-title">ОСНОВНЫЕ НАПРАВЛЕНИЯ</h2>
+        <div class="divider-accent"></div>
+        <p class="section-lead">Мы работаем с ведущими производителями и дистрибьюторами — широкий ассортимент всегда в наличии или под заказ в кратчайшие сроки.</p>
+      </div>
+    </div>
+    <div class="row g-4">
+      <!-- Card 1 -->
+      <div class="col-sm-6 col-lg-4">
+        <div class="cat-card">
+          <div class="cat-card-img">
+            <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80" alt="Промышленные станки">
+            <span class="cat-card-tag">Популярное</span>
+          </div>
+          <div class="cat-card-body">
+            <div class="cat-card-title">Промышленные станки</div>
+            <p class="cat-card-desc">Токарные, фрезерные, сверлильные, шлифовальные станки. Оборудование с ЧПУ. Российские и европейские производители.</p>
+            <a href="#contact" class="cat-card-link">Узнать цену <i class="bi bi-arrow-right"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg-4">
+        <div class="cat-card">
+          <div class="cat-card-img">
+            <img src="https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?w=600&q=80" alt="Металлопрокат">
+          </div>
+          <div class="cat-card-body">
+            <div class="cat-card-title">Металлопрокат</div>
+            <p class="cat-card-desc">Арматура, двутавр, уголок, швеллер, трубы стальные. Листовой прокат. Поставка от 1 тонны. Резка по размерам.</p>
+            <a href="#contact" class="cat-card-link">Узнать цену <i class="bi bi-arrow-right"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg-4">
+        <div class="cat-card">
+          <div class="cat-card-img">
+            <img src="https://images.unsplash.com/photo-1555664424-778a1e5e1b48?w=600&q=80" alt="Кабельная продукция">
+          </div>
+          <div class="cat-card-body">
+            <div class="cat-card-title">Кабельная продукция</div>
+            <p class="cat-card-desc">Силовые и контрольные кабели, провода монтажные, кабели связи. Сертифицированная продукция, полный комплект документов.</p>
+            <a href="#contact" class="cat-card-link">Узнать цену <i class="bi bi-arrow-right"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg-4">
+        <div class="cat-card">
+          <div class="cat-card-img">
+            <img src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=600&q=80" alt="Энергетическое оборудование">
+          </div>
+          <div class="cat-card-body">
+            <div class="cat-card-title">Энергетическое оборудование</div>
+            <p class="cat-card-desc">Трансформаторы, генераторы, распределительные щиты, ИБП. Поставка, монтаж и сервисное обслуживание.</p>
+            <a href="#contact" class="cat-card-link">Узнать цену <i class="bi bi-arrow-right"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg-4">
+        <div class="cat-card">
+          <div class="cat-card-img">
+            <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=600&q=80" alt="Запасные части">
+          </div>
+          <div class="cat-card-body">
+            <div class="cat-card-title">Запасные части</div>
+            <p class="cat-card-desc">Подшипники, шестерни, валы, электродвигатели, редукторы, гидравлические компоненты. Большой складской запас.</p>
+            <a href="#contact" class="cat-card-link">Узнать цену <i class="bi bi-arrow-right"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg-4">
+        <div class="cat-card">
+          <div class="cat-card-img">
+            <img src="https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=600&q=80" alt="Подъёмное оборудование">
+          </div>
+          <div class="cat-card-body">
+            <div class="cat-card-title">Подъёмное оборудование</div>
+            <p class="cat-card-desc">Тали, кран-балки, лебёдки, домкраты. Мостовые краны под заказ. Строповочные материалы и грузозахватные приспособления.</p>
+            <a href="#contact" class="cat-card-link">Узнать цену <i class="bi bi-arrow-right"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="why-section" id="about">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-5">
+        <div class="why-img-wrap">
+          <img src="https://images.unsplash.com/photo-1565793298595-6a879b1d9492?w=700&q=80" alt="Склад ServiceName">
+          <div class="why-img-badge">
+            12<small>лет<br>опыта</small>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-7">
+        <span class="section-eyebrow">Почему мы</span>
+        <h2 class="section-title">НАДЁЖНЫЙ ПАРТНЁР ДЛЯ ВАШЕГО ПРОИЗВОДСТВА</h2>
+        <div class="divider-accent"></div>
+        <p class="section-lead mb-4">ООО «ServiceName» — российская компания с 2012 года. Работаем напрямую с заводами-изготовителями, что гарантирует качество и конкурентные цены.</p>
+        <div class="why-item">
+          <div class="why-icon"><i class="bi bi-truck"></i></div>
+          <div>
+            <div class="why-item-title">Прямые поставки без посредников</div>
+            <p class="why-item-desc">Работаем с производителями напрямую. Минимальная наценка, гарантия подлинности, полный пакет сопроводительных документов.</p>
+          </div>
+        </div>
+        <div class="why-item">
+          <div class="why-icon"><i class="bi bi-speedometer2"></i></div>
+          <div>
+            <div class="why-item-title">Короткие сроки поставки</div>
+            <p class="why-item-desc">Собственный складской запас, отлаженная логистика. Срочные поставки по всей России и странам СНГ в течение 1–7 дней.</p>
+          </div>
+        </div>
+        <div class="why-item">
+          <div class="why-icon"><i class="bi bi-headset"></i></div>
+          <div>
+            <div class="why-item-title">Техническая поддержка</div>
+            <p class="why-item-desc">Инженеры помогут подобрать оборудование под ваши технические требования. Консультации бесплатно, без давления.</p>
+          </div>
+        </div>
+        <div class="why-item">
+          <div class="why-icon"><i class="bi bi-patch-check"></i></div>
+          <div>
+            <div class="why-item-title">Гарантия и сертификация</div>
+            <p class="why-item-desc">Всё оборудование сертифицировано. Гарантийное и постгарантийное обслуживание. Работаем по договору с НДС.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="process-section">
+  <div class="container">
+    <div class="row mb-5">
+      <div class="col-lg-6">
+        <span class="section-eyebrow">Как мы работаем</span>
+        <h2 class="section-title">ПРОСТОЙ ПРОЦЕСС ЗАКАЗА</h2>
+        <div class="divider-accent"></div>
+      </div>
+    </div>
+    <div class="row g-4">
+      <div class="col-sm-6 col-lg-3">
+        <div class="process-step">
+          <div class="step-num">01</div>
+          <div class="step-title">Заявка</div>
+          <p class="step-desc">Оставьте заявку на сайте, по телефону или по e-mail. Опишите потребность или пришлите спецификацию.</p>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg-3">
+        <div class="process-step">
+          <div class="step-num">02</div>
+          <div class="step-title">Расчёт</div>
+          <p class="step-desc">Менеджер свяжется с вами в течение 24 часов и подготовит коммерческое предложение с ценами и сроками.</p>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg-3">
+        <div class="process-step">
+          <div class="step-num">03</div>
+          <div class="step-title">Договор</div>
+          <p class="step-desc">Подписываем договор поставки. Работаем с юридическими лицами и ИП. Все необходимые документы предоставляем.</p>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg-3">
+        <div class="process-step">
+          <div class="step-num">04</div>
+          <div class="step-title">Доставка</div>
+          <p class="step-desc">Отгрузка со склада или от производителя. Самовывоз, транспортная компания или наша служба доставки по Москве.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="gallery-section">
+  <div class="container">
+    <div class="row mb-4">
+      <div class="col-lg-6">
+        <span class="section-eyebrow">Производство и склад</span>
+        <h2 class="section-title">НАШИ МОЩНОСТИ</h2>
+        <div class="divider-accent"></div>
+      </div>
+    </div>
+    <div class="gallery-grid">
+      <div class="g-item big">
+        <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=600&q=80" alt="Промышленный склад">
+      </div>
+      <div class="g-item">
+        <img src="https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=600&q=80" alt="Оборудование на складе">
+      </div>
+      <div class="g-item">
+        <img src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=500&q=80" alt="Производственный цех">
+      </div>
+      <div class="g-item">
+        <img src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=500&q=80" alt="Инженер за работой">
+      </div>
+      <div class="g-item">
+        <img src="https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?w=600&q=80" alt="Металлопрокат">
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="clients-section">
+  <div class="container">
+    <div class="text-center mb-4">
+      <span class="section-eyebrow">Нас выбирают</span>
+      <h3 style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--navy);">НАШИ КЛИЕНТЫ И ПАРТНЁРЫ</h3>
+    </div>
+    <div class="row justify-content-center align-items-center g-4">
+      <div class="col-6 col-sm-4 col-md-2 client-logo"><div class="client-logo-text">ЗАВОД А</div></div>
+      <div class="col-6 col-sm-4 col-md-2 client-logo"><div class="client-logo-text">МЕТКОМ</div></div>
+      <div class="col-6 col-sm-4 col-md-2 client-logo"><div class="client-logo-text">СТРОЙГРУП</div></div>
+      <div class="col-6 col-sm-4 col-md-2 client-logo"><div class="client-logo-text">РОСЭНЕРГО</div></div>
+      <div class="col-6 col-sm-4 col-md-2 client-logo"><div class="client-logo-text">ПРОМТЕХ</div></div>
+      <div class="col-6 col-sm-4 col-md-2 client-logo"><div class="client-logo-text">ТЕХСНАБ</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <div class="cta-bg"></div>
+  <div class="container" style="position:relative;z-index:2;">
+    <div class="row align-items-center">
+      <div class="col-lg-7 mb-4 mb-lg-0">
+        <h2 class="section-title">НУЖНА КОНСУЛЬТАЦИЯ ИЛИ КОММЕРЧЕСКОЕ ПРЕДЛОЖЕНИЕ?</h2>
+        <p class="mt-3">Свяжитесь с нами — специалист ответит в течение рабочего дня и поможет подобрать оборудование под ваши задачи.</p>
+      </div>
+      <div class="col-lg-5 text-lg-end">
+        <div class="d-flex flex-wrap gap-3 justify-content-lg-end">
+          <a href="#contact" class="btn-cta-white">Оставить заявку</a>
+          <a href="tel:88009999999" class="btn-cta-outline"><i class="bi bi-telephone me-2"></i>8 800 999-99-99</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="contact-section" id="contact">
+  <div class="container">
+    <div class="row mb-5">
+      <div class="col-lg-6">
+        <span class="section-eyebrow">Связаться с нами</span>
+        <h2 class="section-title">КОНТАКТЫ</h2>
+        <div class="divider-accent"></div>
+      </div>
+    </div>
+    <div class="row g-5">
+      <div class="col-lg-6">
+        <div class="form-card">
+          <h3 style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--navy);letter-spacing:0.04em;margin-bottom:1.5rem;">Оставить заявку</h3>
+          <form id="contactForm">
+            <div class="mb-3">
+              <div class="form-label-custom">Ваше имя *</div>
+              <input type="text" class="form-control-custom" placeholder="Иванов Иван Иванович" required>
+            </div>
+            <div class="mb-3">
+              <div class="form-label-custom">Компания</div>
+              <input type="text" class="form-control-custom" placeholder="ООО «Название»">
+            </div>
+            <div class="row g-3 mb-3">
+              <div class="col-sm-6">
+                <div class="form-label-custom">Телефон *</div>
+                <input type="tel" class="form-control-custom" placeholder="+7 (___) ___-__-__" required>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-label-custom">E-mail</div>
+                <input type="email" class="form-control-custom" placeholder="mail@company.ru">
+              </div>
+            </div>
+            <div class="mb-4">
+              <div class="form-label-custom">Что вас интересует?</div>
+              <textarea class="form-control-custom" placeholder="Опишите потребность или прикрепите спецификацию..."></textarea>
+            </div>
+            <button type="submit" class="btn-submit">Отправить заявку <i class="bi bi-send ms-2"></i></button>
+            <div class="success-toast" id="successToast"><i class="bi bi-check-circle me-2"></i>Заявка отправлена! Мы свяжемся с вами в течение 24 часов.</div>
+            <p style="font-size:0.75rem;color:#94a3b8;margin-top:10px;">Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности</p>
+          </form>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="contact-info-item">
+          <div class="contact-icon"><i class="bi bi-telephone-fill"></i></div>
+          <div>
+            <div class="contact-info-label">Телефон (бесплатно)</div>
+            <div class="contact-info-value"><a href="tel:88009999999">8 800 999-99-99</a></div>
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-icon"><i class="bi bi-envelope-fill"></i></div>
+          <div>
+            <div class="contact-info-label">Электронная почта</div>
+            <div class="contact-info-value"><a href="mailto:info@servicename-group.ru">info@servicename-group.ru</a></div>
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-icon"><i class="bi bi-geo-alt-fill"></i></div>
+          <div>
+            <div class="contact-info-label">Офис и склад</div>
+            <div class="contact-info-value">Москва, ул. Пушкина, д. 10, стр. 2</div>
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-icon"><i class="bi bi-clock-fill"></i></div>
+          <div>
+            <div class="contact-info-label">Режим работы</div>
+            <div class="contact-info-value">Пн–Пт: 9:00–18:00<br><span style="font-size:0.82rem;color:#94a3b8;">Сб–Вс: выходной</span></div>
+          </div>
+        </div>
+        <div class="map-placeholder mt-3">
+          <div style="position:relative;overflow:hidden;"><a href="https://yandex.com/maps/44/izhevsk/?utm_medium=mapframe&utm_source=maps" style="color:#eee;font-size:12px;position:absolute;top:0px;">Izhevsk</a><a href="https://yandex.com/maps/44/izhevsk/?ll=53.207017%2C56.852755&utm_medium=mapframe&utm_source=maps&z=13" style="color:#eee;font-size:12px;position:absolute;top:14px;">Map of Izhevsk with street names and house numbers — Yandex Maps</a><iframe src="https://yandex.com/map-widget/v1/?ll=53.207017%2C56.852755&z=13" width="560" height="400" frameborder="1" allowfullscreen="true" style="position:relative;"></iframe></div>
+        </div>
+        <div class="d-flex gap-3 mt-4">
+          <a href="#" style="color:var(--steel);font-size:1.6rem;"><i class="bi bi-whatsapp"></i></a>
+          <a href="#" style="color:var(--steel);font-size:1.6rem;"><i class="bi bi-telegram"></i></a>
+          <a href="mailto:info@servicename-group.ru" style="color:var(--steel);font-size:1.6rem;"><i class="bi bi-envelope-fill"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="row g-5">
+      <div class="col-lg-4">
+        <div class="footer-brand">ПРОМ<span>СНАБ</span></div>
+        <p class="footer-desc">Поставки промышленного оборудования, металлопроката и кабельной продукции. Надёжный партнёр с 2012 года.</p>
+        <div class="d-flex gap-3 mt-3">
+          <a href="#" style="font-size:1.3rem;"><i class="bi bi-whatsapp"></i></a>
+          <a href="#" style="font-size:1.3rem;"><i class="bi bi-telegram"></i></a>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="footer-heading">Каталог</div>
+        <ul>
+          <li><a href="#">Станки</a></li>
+          <li><a href="#">Металлопрокат</a></li>
+          <li><a href="#">Кабель</a></li>
+          <li><a href="#">Запчасти</a></li>
+          <li><a href="#">Подъёмное</a></li>
+          <li><a href="#">Энергетика</a></li>
+        </ul>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="footer-heading">Компания</div>
+        <ul>
+          <li><a href="#">О нас</a></li>
+          <li><a href="#">Доставка</a></li>
+          <li><a href="#">Оплата</a></li>
+          <li><a href="#">Контакты</a></li>
+          <li><a href="#">Реквизиты</a></li>
+        </ul>
+      </div>
+      <div class="col-md-4 col-lg-4">
+        <div class="footer-heading">Контакты</div>
+        <div class="mb-2"><i class="bi bi-telephone me-2" style="color:var(--accent)"></i><a href="tel:88009999999">8 800 999-99-99</a></div>
+        <div class="mb-2"><i class="bi bi-envelope me-2" style="color:var(--accent)"></i><a href="mailto:info@servicename-group.ru">info@servicename-group.ru</a></div>
+        <div class="mb-2"><i class="bi bi-geo-alt me-2" style="color:var(--accent)"></i>Москва, ул. Пушкина, д. 10</div>
+        <div><i class="bi bi-clock me-2" style="color:var(--accent)"></i>Пн–Пт: 9:00–18:00</div>
+      </div>
+    </div>
+    <div class="footer-bottom d-flex flex-wrap justify-content-between gap-2">
+      <span>© 2024 ООО «ServiceName». Все права защищены.</span>
+      <span>ИНН 7701234567 / КПП 770101001</span>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.getElementById('contactForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  var toast = document.getElementById('successToast');
+  toast.style.display = 'block';
+  this.reset();
+  setTimeout(function(){ toast.style.display = 'none'; }, 5000);
+});
+
+document.querySelectorAll('a[href^="#"]').forEach(function(a) {
+  a.addEventListener('click', function(e) {
+    var href = this.getAttribute('href');
+    if (href.length > 1) {
+      var target = document.querySelector(href);
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  });
+});
+
+document.querySelectorAll('#mainNav .nav-link-custom').forEach(function(link) {
+  link.addEventListener('click', function() {
+    var navCollapse = document.getElementById('mainNav');
+    var bsCollapse = bootstrap.Collapse.getInstance(navCollapse);
+    if (bsCollapse) bsCollapse.hide();
+  });
+});
+
+var fadeEls = document.querySelectorAll('.cat-card, .why-item, .process-step');
+var observer = new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry) {
+    if (entry.isIntersecting) {
+      entry.target.style.opacity = '1';
+      entry.target.style.transform = 'translateY(0)';
+    }
+  });
+}, { threshold: 0.12 });
+fadeEls.forEach(function(el) {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(18px)';
+  el.style.transition = 'opacity 0.45s ease, transform 0.45s ease';
+  observer.observe(el);
+});
+</script>
+</body>
+</html>
