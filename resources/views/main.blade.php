@@ -326,23 +326,17 @@
         <div class="form-label-custom">Компания</div>
         <input type="text" name="company" class="form-control-custom" placeholder="ООО «Название»">
     </div>
-    <div class="row g-3 mb-3">
-        <div class="col-sm-6">
-            <div class="form-label-custom">Телефон *</div>
-            <input type="tel" name="phone" class="form-control-custom" placeholder="+7 (___) ___-__-__" required>
-        </div>
-        <div class="col-sm-6">
-            <div class="form-label-custom">E-mail</div>
-            <input type="email" name="email" class="form-control-custom" placeholder="mail@company.ru">
-        </div>
+    <div class="mb-3">
+        <div class="form-label-custom">E-mail</div>
+        <input type="email" name="email" class="form-control-custom" placeholder="mail@company.ru">
     </div>
     <div class="mb-4">
         <div class="form-label-custom">Что вас интересует?</div>
-        <textarea name="message" class="form-control-custom" placeholder="Опишите потребность или прикрепите спецификацию..."></textarea>
+        <textarea name="message" class="form-control-custom" placeholder="Опишите потребность или прикрепите спецификацию..." rows="4"></textarea>
     </div>
     <button type="submit" class="btn-submit" id="submitBtn">Отправить заявку <i class="bi bi-send ms-2"></i></button>
     <div class="success-toast" id="successToast"><i class="bi bi-check-circle me-2"></i>Заявка отправлена! Мы свяжемся с вами в течение 24 часов.</div>
-    <div class="error-toast" id="errorToast" style="display:none;background:#dc2626;color:white;padding:12px 20px;border-radius:4px;font-size:0.9rem;font-weight:600;margin-top:12px;"><i class="bi bi-exclamation-triangle me-2"></i>Ошибка отправки. Позвоните нам: 8 800 999-99-99</div>
+    <div class="error-toast" id="errorToast" style="display:none;background:#dc2626;color:white;padding:12px 20px;border-radius:4px;font-size:0.9rem;font-weight:600;margin-top:12px;"><i class="bi bi-exclamation-triangle me-2"></i><span id="errorMessage">Ошибка отправки. Позвоните нам: 8 800 999-99-99</span></div>
     <p style="font-size:0.75rem;color:#94a3b8;margin-top:10px;">Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности</p>
 </form>
         </div>

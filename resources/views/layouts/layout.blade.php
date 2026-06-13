@@ -611,6 +611,7 @@ document.getElementById('contactForm').addEventListener('submit', function(e) {
     const submitBtn = document.getElementById('submitBtn');
     const successToast = document.getElementById('successToast');
     const errorToast = document.getElementById('errorToast');
+    const errorMessage = document.getElementById('errorMessage');
 
     // Скрываем предыдущие сообщения
     successToast.style.display = 'none';
@@ -623,7 +624,7 @@ document.getElementById('contactForm').addEventListener('submit', function(e) {
     // Собираем данные
     const formData = new FormData(form);
 
-    fetch('/contact/send', {
+    fetch('{{ route("contact.send") }}', {
         method: 'POST',
         body: formData,
         headers: {
@@ -638,10 +639,12 @@ document.getElementById('contactForm').addEventListener('submit', function(e) {
             successToast.style.display = 'block';
             form.reset();
         } else {
+            errorMessage.textContent = data.message || 'Ошибка отправки. Позвоните нам: 8 800 999-99-99';
             errorToast.style.display = 'block';
         }
     })
     .catch(error => {
+        errorMessage.textContent = 'Ошибка отправки. Позвоните нам: 8 800 999-99-99';
         errorToast.style.display = 'block';
     })
     .finally(() => {
