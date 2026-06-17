@@ -3,16 +3,15 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\AuthController;
-
-
-
-Route::post('/contact/send', [ContactController::class, 'send'])->name('contact.send');
-
+use App\Http\Controllers\AdminController;
 
 // Главная страница
 Route::get('/', function () {
     return view('main');
 })->name('home');
+
+// Отправка формы контактов (только один раз!)
+Route::post('/contact/send', [ContactController::class, 'send'])->name('contact.send');
 
 // Аутентификация
 Route::middleware('guest')->group(function () {
@@ -27,18 +26,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
 });
 
-// Отправка формы контактов
-Route::post('/contact/send', function () {
-    // Здесь логика отправки
-    return response()->json(['success' => true]);
-})->name('contact.send');
-
-Route::post('/contact/send', [App\Http\Controllers\ContactController::class, 'send'])->name('contact.send');
-
 // Админ-панель
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
-    Route::get('/', [App\Http\Controllers\AdminController::class, 'index'])->name('admin.index');
-    Route::post('/requests/{id}/status', [App\Http\Controllers\AdminController::class, 'updateStatus'])->name('admin.updateStatus');
-    Route::get('/requests/{id}', [App\Http\Controllers\AdminController::class, 'showRequest'])->name('admin.request');
-    Route::delete('/requests/{id}', [App\Http\Controllers\AdminController::class, 'deleteRequest'])->name('admin.deleteRequest');
+    Route::get('/', [AdminController::class, 'index'])->name('admin.index');
+    Route::post('/requests/{id}/status', [AdminController::class, 'updateStatus'])->name('admin.updateStatus');
+    Route::get('/requests/{id}', [AdminController::class, 'showRequest'])->name('admin.request');
+    Route::delete('/requests/{id}', [AdminController::class, 'deleteRequest'])->name('admin.deleteRequest');
 });

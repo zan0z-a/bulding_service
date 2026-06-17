@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
 <title>@yield('title', 'ServiceName — Поставки промышленного оборудования')</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -460,16 +461,12 @@ footer ul li { margin-bottom: 0.5rem; }
 @media (max-width: 991px) {
   .why-img-badge { right: 10px; }
   .hero-section { min-height: 460px; }
-
-  /* Уменьшаем вертикальные отступы секций */
   .catalog-section,
   .why-section,
   .gallery-section,
   .contact-section,
   .process-section { padding: 60px 0; }
   .cta-section { padding: 50px 0; }
-
-  /* Мобильное меню: развёрнутое состояние */
   .navbar-collapse.show,
   .navbar-collapse.collapsing {
     padding: 0.3rem 0 0.8rem;
@@ -493,14 +490,9 @@ footer ul li { margin-bottom: 0.5rem; }
 
 /* ─── BREAKPOINT: MOBILE ≤767px ────────────────────────────────── */
 @media (max-width: 767px) {
-  /* Why-блок: изображение */
   .why-img-wrap img { height: 280px; }
   .why-img-badge { bottom: 16px; right: 16px; font-size: 1.5rem; }
-
-  /* Stats-полоса: разделители */
   .stats-row .col-6.col-md-3 { border-bottom: 1px solid rgba(13,27,42,0.12); }
-
-  /* Вертикальные отступы всех секций */
   .catalog-section,
   .why-section,
   .gallery-section,
@@ -508,45 +500,28 @@ footer ul li { margin-bottom: 0.5rem; }
   .process-section { padding: 44px 0; }
   .cta-section { padding: 40px 0; }
   .clients-section { padding: 30px 0; }
-
-  /* Hero-секция */
   .hero-section { min-height: 0 !important; }
   .hero-content.py-5 { padding-top: 44px !important; padding-bottom: 44px !important; }
   .hero-diagonal { display: none; }
   .hero-subtitle { font-size: 0.93rem; max-width: 100%; }
-
-  /* Заголовки секций: отступ снизу */
   .catalog-section .row.mb-5,
   .process-section .row.mb-5,
   .gallery-section .row.mb-4,
   .contact-section .row.mb-5 { margin-bottom: 1.8rem !important; }
-
-  /* Шаги процесса */
   .process-step { padding: 1.2rem 1rem; }
   .step-num { font-size: 3rem; }
-
-  /* CTA-секция: кнопки — колонкой */
   .cta-section .col-lg-5 .d-flex { flex-direction: column !important; }
   .btn-cta-white,
   .btn-cta-outline { display: block; width: 100%; text-align: center; }
-
-  /* Форма обратной связи */
   .form-card { padding: 1.4rem 1.1rem; }
-
-  /* Карта: нет фиксированной высоты */
   .map-placeholder iframe { display: block; width: 100% !important; height: 220px; }
-
-  /* Футер */
   footer .row.g-5 { row-gap: 2rem !important; }
   .footer-desc { max-width: 100%; }
 }
 
 /* ─── BREAKPOINT: МАЛЕНЬКИЙ ТЕЛЕФОН ≤575px ─────────────────────── */
 @media (max-width: 575px) {
-  /* Hero: заголовок меньше */
   .hero-title { font-size: clamp(2rem, 11vw, 2.8rem) !important; }
-
-  /* Hero: кнопки во всю ширину, в столбик */
   .hero-content .d-flex.gap-3 { flex-direction: column !important; }
   .btn-hero-primary,
   .btn-hero-ghost {
@@ -554,12 +529,8 @@ footer ul li { margin-bottom: 0.5rem; }
     text-align: center !important;
     display: block;
   }
-
-  /* Stats: нижние два элемента без разделителя */
   .stats-row .col-6:nth-child(3),
   .stats-row .col-6:nth-child(4) { border-bottom: none !important; }
-
-  /* Галерея: один столбец */
   .gallery-grid {
     grid-template-columns: 1fr !important;
     grid-template-rows: auto !important;
@@ -570,14 +541,8 @@ footer ul li { margin-bottom: 0.5rem; }
     height: 220px !important;
   }
   .g-item { height: 160px !important; }
-
-  /* CTA: заголовок уже */
   .cta-section .section-title { font-size: clamp(1.6rem, 8vw, 2.2rem); }
-
-  /* Логотипы клиентов: чуть меньше */
   .client-logo-text { font-size: 1.1rem; padding: 3px 10px; }
-
-  /* Футер нижняя строка: в столбик */
   .footer-bottom { flex-direction: column !important; gap: 4px !important; }
 }
 
@@ -604,59 +569,60 @@ footer ul li { margin-bottom: 0.5rem; }
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-document.getElementById('contactForm').addEventListener('submit', function(e) {
-    e.preventDefault();
+document.addEventListener('DOMContentLoaded', function() {
+    var contactForm = document.getElementById('contactForm');
+    if (contactForm) {
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
 
-    const form = this;
-    const submitBtn = document.getElementById('submitBtn');
-    const successToast = document.getElementById('successToast');
-    const errorToast = document.getElementById('errorToast');
-    const errorMessage = document.getElementById('errorMessage');
+            var form = this;
+            var submitBtn = document.getElementById('submitBtn');
+            var successToast = document.getElementById('successToast');
+            var errorToast = document.getElementById('errorToast');
+            var errorMessage = document.getElementById('errorMessage');
 
-    // Скрываем предыдущие сообщения
-    successToast.style.display = 'none';
-    errorToast.style.display = 'none';
-
-    // Блокируем кнопку
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Отправка...';
-
-    // Собираем данные
-    const formData = new FormData(form);
-
-    fetch('{{ route("contact.send") }}', {
-        method: 'POST',
-        body: formData,
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest',
-            'Accept': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            successToast.style.display = 'block';
-            form.reset();
-        } else {
-            errorMessage.textContent = data.message || 'Ошибка отправки. Позвоните нам: 8 800 999-99-99';
-            errorToast.style.display = 'block';
-        }
-    })
-    .catch(error => {
-        errorMessage.textContent = 'Ошибка отправки. Позвоните нам: 8 800 999-99-99';
-        errorToast.style.display = 'block';
-    })
-    .finally(() => {
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = 'Отправить заявку <i class="bi bi-send ms-2"></i>';
-
-        // Автоскрытие через 6 секунд
-        setTimeout(() => {
             successToast.style.display = 'none';
             errorToast.style.display = 'none';
-        }, 6000);
-    });
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Отправка...';
+
+            var formData = new FormData(form);
+
+            fetch('/contact/send', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+                }
+            })
+            .then(function(response) { return response.json(); })
+            .then(function(data) {
+                if (data.success) {
+                    successToast.style.display = 'block';
+                    form.reset();
+                } else {
+                    errorMessage.textContent = data.message || 'Ошибка отправки. Позвоните нам: 8 800 999-99-99';
+                    errorToast.style.display = 'block';
+                }
+            })
+            .catch(function(error) {
+                errorMessage.textContent = 'Ошибка отправки. Позвоните нам: 8 800 999-99-99';
+                errorToast.style.display = 'block';
+            })
+            .finally(function() {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Отправить заявку <i class="bi bi-send ms-2"></i>';
+
+                setTimeout(function() {
+                    successToast.style.display = 'none';
+                    errorToast.style.display = 'none';
+                }, 6000);
+            });
+        });
+    }
 });
 </script>
 
