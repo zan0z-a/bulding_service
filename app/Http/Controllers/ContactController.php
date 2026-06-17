@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ContactRequest;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\RateLimiter;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -14,15 +14,6 @@ class ContactController extends Controller
 {
     public function send(Request $request)
     {
-        // Проверка авторизации
-        if (!Auth::check()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Для отправки заявки необходимо войти в аккаунт.',
-                'redirect' => route('login')
-            ], 401);
-        }
-
         // Валидация
         $request->validate([
             'name' => 'required|string|max:255',
@@ -32,7 +23,7 @@ class ContactController extends Controller
         ]);
 
         $ip = $request->ip();
-        $email = $request->email ?: Auth::user()->email;
+        $email = $request->email;
         
         // Проверка лимита: 1 запрос в минуту с одного IP
         $rateLimitKey = 'contact_request_ip:' . $ip;
@@ -44,6 +35,7 @@ class ContactController extends Controller
             ], 429);
         }
         
+        // Увеличиваем счетчик для IP
         RateLimiter::hit($rateLimitKey, 60);
 
         // Проверка по email: максимум 3 заявки с одного email
@@ -53,7 +45,7 @@ class ContactController extends Controller
             if ($emailRequestCount >= 3) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Достигнут лимит заявок для этого email.'
+                    'message' => 'Достигнут лимит заявок для этого email. Пожалуйста, свяжитесь с нами по телефону.'
                 ], 429);
             }
         }
@@ -75,10 +67,11 @@ class ContactController extends Controller
             ], 500);
         }
 
-        // Отправка email
+        // Отправка email (если настроен SMTP)
         try {
-            $this->sendEmail($request, $contactRequest, $email);
+            $this->sendEmail($request, $contactRequest);
         } catch (\Exception $e) {
+            // Логируем ошибку, но не показываем пользователю
             \Log::error('Ошибка отправки email: ' . $e->getMessage(), [
                 'contact_request_id' => $contactRequest->id
             ]);
@@ -93,28 +86,32 @@ class ContactController extends Controller
     /**
      * Отправка email уведомления
      */
-    private function sendEmail(Request $request, ContactRequest $contactRequest, $email)
+    private function sendEmail(Request $request, ContactRequest $contactRequest)
     {
+        // Проверяем, что есть настройки SMTP
         if (!env('MAIL_HOST') || !env('MAIL_USERNAME') || !env('MAIL_PASSWORD')) {
-            return;
+            return; // Пропускаем отправку если нет настроек
         }
 
         $mail = new PHPMailer(true);
 
         $mail->isSMTP();
-        $mail->Host = env('MAIL_HOST', 'smtp.gmail.com');
+        $mail->Host = env('MAIL_HOST', 'smtp.mail.ru');
         $mail->SMTPAuth = true;
         $mail->Username = env('MAIL_USERNAME');
         $mail->Password = env('MAIL_PASSWORD');
-        $mail->SMTPSecure = env('MAIL_ENCRYPTION', 'tls');
-        $mail->Port = env('MAIL_PORT', 587);
+        $mail->SMTPSecure = env('MAIL_ENCRYPTION', 'ssl');
+        $mail->Port = env('MAIL_PORT', 465);
         $mail->CharSet = 'UTF-8';
 
         $mail->setFrom(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME', 'ServiceName'));
-        $mail->addAddress(env('MAIL_TO_ADDRESS', 'bedbitor337@gmail.com'));
         
-        if ($email) {
-            $mail->addReplyTo($email, $request->name);
+        // Основной получатель
+        $mail->addAddress(env('MAIL_TO_ADDRESS', 'info@servicename-group.ru'));
+        
+        // Отправляем копию заявителю, если указан email
+        if ($request->email) {
+            $mail->addReplyTo($request->email, $request->name);
         }
 
         $mail->isHTML(true);
@@ -143,7 +140,7 @@ class ContactController extends Controller
                     <p><strong>Статус:</strong> {$statusLabel}</p>
                     <p><strong>Имя:</strong> " . htmlspecialchars($request->name) . "</p>
                     <p><strong>Компания:</strong> " . htmlspecialchars($request->company ?: 'Не указана') . "</p>
-                    <p><strong>E-mail:</strong> " . htmlspecialchars($contactRequest->email) . "</p>
+                    <p><strong>E-mail:</strong> " . htmlspecialchars($request->email ?: 'Не указан') . "</p>
                     <p><strong>Сообщение:</strong><br>" . nl2br(htmlspecialchars($request->message ?: 'Не указано')) . "</p>
                     <hr>
                     <p style='color: #94a3b8; font-size: 12px;'>
