@@ -326,10 +326,12 @@
         <div class="form-label-custom">Компания</div>
         <input type="text" name="company" class="form-control-custom" placeholder="ООО «Название»">
     </div>
-    <div class="mb-3">
-        <div class="form-label-custom">E-mail</div>
-        <input type="email" name="email" class="form-control-custom" placeholder="mail@company.ru">
-    </div>
+<div class="mb-3">
+    <div class="form-label-custom">E-mail</div>
+    <input type="email" name="email" class="form-control-custom" 
+           placeholder="mail@company.ru" 
+           value="{{ Auth::check() ? Auth::user()->email : '' }}">
+</div>
     <div class="mb-4">
         <div class="form-label-custom">Что вас интересует?</div>
         <textarea name="message" class="form-control-custom" placeholder="Опишите потребность или прикрепите спецификацию..." rows="4"></textarea>

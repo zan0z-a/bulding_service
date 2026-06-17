@@ -589,40 +589,49 @@ document.addEventListener('DOMContentLoaded', function() {
 
             var formData = new FormData(form);
 
-            fetch('/contact/send', {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
-                }
-            })
-            .then(function(response) { return response.json(); })
-            .then(function(data) {
-                if (data.success) {
-                    successToast.style.display = 'block';
-                    form.reset();
-                } else {
-                    errorMessage.textContent = data.message || 'Ошибка отправки. Позвоните нам: 8 800 999-99-99';
-                    errorToast.style.display = 'block';
-                }
-            })
-            .catch(function(error) {
-                errorMessage.textContent = 'Ошибка отправки. Позвоните нам: 8 800 999-99-99';
-                errorToast.style.display = 'block';
-            })
-            .finally(function() {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = 'Отправить заявку <i class="bi bi-send ms-2"></i>';
-
-                setTimeout(function() {
-                    successToast.style.display = 'none';
-                    errorToast.style.display = 'none';
-                }, 6000);
-            });
+fetch('/contact/send', {
+    method: 'POST',
+    body: formData,
+    headers: {
+        'X-Requested-With': 'XMLHttpRequest',
+        'Accept': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+    }
+})
+.then(function(response) { 
+    if (response.status === 401) {
+        return response.json().then(function(data) {
+            window.location.href = data.redirect;
         });
     }
+    return response.json(); 
+})
+.then(function(data) {
+    if (data && data.success) {
+        successToast.style.display = 'block';
+        form.reset();
+        // Восстанавливаем email после сброса
+        var emailInput = form.querySelector('input[name="email"]');
+        if (emailInput) {
+            emailInput.value = '{{ Auth::check() ? Auth::user()->email : "" }}';
+        }
+    } else if (data) {
+        errorMessage.textContent = data.message || 'Ошибка отправки. Позвоните нам: 8 800 999-99-99';
+        errorToast.style.display = 'block';
+    }
+})
+.catch(function(error) {
+    errorMessage.textContent = 'Ошибка отправки. Позвоните нам: 8 800 999-99-99';
+    errorToast.style.display = 'block';
+})
+.finally(function() {
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = 'Отправить заявку <i class="bi bi-send ms-2"></i>';
+
+    setTimeout(function() {
+        successToast.style.display = 'none';
+        errorToast.style.display = 'none';
+    }, 6000);
 });
 </script>
 

@@ -33,3 +33,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/requests/{id}', [AdminController::class, 'showRequest'])->name('admin.request');
     Route::delete('/requests/{id}', [AdminController::class, 'deleteRequest'])->name('admin.deleteRequest');
 });
+
+Route::get('/check-auth', function() {
+    return response()->json(['authenticated' => Auth::check()]);
+})->name('check.auth');
