@@ -457,7 +457,6 @@ footer ul li { margin-bottom: 0.5rem; }
 .divider-accent { width: 48px; height: 3px; background: var(--accent); margin: 1rem 0 1.6rem; border-radius: 2px; }
 .success-toast { display: none; background: #16a34a; color: white; padding: 12px 20px; border-radius: 4px; font-size: 0.9rem; font-weight: 600; margin-top: 12px; }
 
-/* ─── BREAKPOINT: TABLET ≤991px ───────────────────────────────── */
 @media (max-width: 991px) {
   .why-img-badge { right: 10px; }
   .hero-section { min-height: 460px; }
@@ -488,7 +487,6 @@ footer ul li { margin-bottom: 0.5rem; }
   }
 }
 
-/* ─── BREAKPOINT: MOBILE ≤767px ────────────────────────────────── */
 @media (max-width: 767px) {
   .why-img-wrap img { height: 280px; }
   .why-img-badge { bottom: 16px; right: 16px; font-size: 1.5rem; }
@@ -519,7 +517,6 @@ footer ul li { margin-bottom: 0.5rem; }
   .footer-desc { max-width: 100%; }
 }
 
-/* ─── BREAKPOINT: МАЛЕНЬКИЙ ТЕЛЕФОН ≤575px ─────────────────────── */
 @media (max-width: 575px) {
   .hero-title { font-size: clamp(2rem, 11vw, 2.8rem) !important; }
   .hero-content .d-flex.gap-3 { flex-direction: column !important; }
@@ -546,7 +543,6 @@ footer ul li { margin-bottom: 0.5rem; }
   .footer-bottom { flex-direction: column !important; gap: 4px !important; }
 }
 
-/* ─── BREAKPOINT: СОВСЕМ МАЛЕНЬКИЙ ТЕЛЕФОН ≤400px ──────────────── */
 @media (max-width: 400px) {
   .hero-title { font-size: 1.95rem !important; }
   .stat-num { font-size: 1.7rem; }

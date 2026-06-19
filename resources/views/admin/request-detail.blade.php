@@ -1,4 +1,3 @@
-{{-- resources/views/admin/request-detail.blade.php --}}
 @extends('layouts.layout')
 
 @section('title', 'Заявка #' . $contactRequest->id . ' — ServiceName')

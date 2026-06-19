@@ -1,4 +1,3 @@
-{{-- resources/views/main.blade.php --}}
 @extends('layouts.layout')
 
 @section('title', 'ServiceName — Поставки промышленного оборудования')
@@ -244,9 +243,7 @@
 @push('scripts')
 <script>
 (function() {
-    var isSubmitting = false; // Флаг блокировки повторной отправки
-
-    // Обработка чекбокса "У меня нет компании"
+    var isSubmitting = false;
     var noCompanyCheck = document.getElementById('noCompanyCheck');
     var companyInput = document.getElementById('companyInput');
     
@@ -267,12 +264,10 @@
         });
     }
 
-    // Функция отправки формы
     function handleSubmit(e) {
         e.preventDefault();
         e.stopPropagation();
         
-        // Блокировка повторной отправки
         if (isSubmitting) {
             return false;
         }
@@ -283,7 +278,6 @@
         var errorToast = document.getElementById('errorToast');
         var errorMessage = document.getElementById('errorMessage');
 
-        // Проверка reCAPTCHA
         if (typeof grecaptcha !== 'undefined') {
             var captchaResponse = grecaptcha.getResponse();
             if (!captchaResponse || captchaResponse.length === 0) {
@@ -296,11 +290,9 @@
             }
         }
 
-        // Скрываем старые сообщения
         successToast.style.display = 'none';
         errorToast.style.display = 'none';
 
-        // Блокируем кнопку и ставим флаг
         isSubmitting = true;
         submitBtn.disabled = true;
         submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Отправка...';
@@ -321,18 +313,15 @@
         })
         .then(function(data) {
             if (data.success) {
-                // Показываем ТОЛЬКО успех
                 successToast.style.display = 'block';
                 errorToast.style.display = 'none';
                 
                 form.reset();
                 
-                // Сброс капчи
                 if (typeof grecaptcha !== 'undefined') {
                     grecaptcha.reset();
                 }
                 
-                // Сброс чекбокса компании
                 if (noCompanyCheck && companyInput) {
                     noCompanyCheck.checked = false;
                     companyInput.disabled = false;
@@ -341,10 +330,8 @@
                     companyInput.style.backgroundColor = '';
                 }
                 
-                // Прокрутка к форме
                 form.scrollIntoView({ behavior: 'smooth', block: 'center' });
             } else {
-                // Показываем ТОЛЬКО ошибку
                 successToast.style.display = 'none';
                 errorMessage.textContent = data.message || 'Ошибка отправки. Позвоните нам: 8 800 999-99-99';
                 errorToast.style.display = 'block';
@@ -365,17 +352,14 @@
             }
         })
         .finally(function() {
-            // Разблокируем кнопку
             submitBtn.disabled = false;
             submitBtn.innerHTML = 'Отправить заявку <i class="bi bi-send ms-2"></i>';
             
-            // Автоскрытие сообщений
             setTimeout(function() {
                 successToast.style.display = 'none';
                 errorToast.style.display = 'none';
             }, 6000);
             
-            // Сбрасываем флаг через секунду (защита от двойного клика)
             setTimeout(function() {
                 isSubmitting = false;
             }, 1000);
@@ -384,7 +368,6 @@
         return false;
     }
 
-    // Назначаем обработчик (удаляем старый если есть)
     var contactForm = document.getElementById('contactForm');
     if (contactForm) {
         contactForm.removeEventListener('submit', handleSubmit);

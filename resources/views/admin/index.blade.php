@@ -65,7 +65,6 @@
       </div>
 
       <div class="tab-content">
-        {{-- Заявки --}}
         <div class="tab-pane fade show active" id="requestsTab">
           <div class="filter-bar">
             <a href="?status=new" class="filter-btn {{ $status == 'new' ? 'active' : '' }}">Новое <span class="badge">{{ $stats['new'] }}</span></a>

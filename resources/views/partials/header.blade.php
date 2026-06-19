@@ -29,7 +29,6 @@
           <a href="{{ url('/#contact') }}" class="btn btn-nav-cta">Запросить цену</a>
         </li>
         
-        {{-- Блок аутентификации --}}
         @auth
           <li class="nav-item dropdown ms-lg-2">
             <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown" style="color: rgba(255,255,255,0.82) !important; font-weight: 600; font-size: 0.88rem; letter-spacing: 0.05em; text-transform: uppercase; padding: 1.2rem 0.5rem !important;">

@@ -1,5 +1,4 @@
 <?php
-// app/Http/Controllers/ContactController.php
 
 namespace App\Http\Controllers;
 
@@ -34,7 +33,6 @@ class ContactController extends Controller
             'no_company' => 'nullable|in:1',
         ], $messages);
 
-        // Если стоит галочка "нет компании", обнуляем компанию
         $company = $request->has('no_company') ? null : $request->company;
 
         $ip = $request->ip();
