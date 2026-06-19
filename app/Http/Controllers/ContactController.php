@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 
 use App\Models\ContactRequest;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\RateLimiter;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -14,12 +13,29 @@ class ContactController extends Controller
 {
     public function send(Request $request)
     {
-        $request->validate([
+        $messages = [
+            'name.required' => 'Пожалуйста, укажите ваше имя.',
+            'name.max' => 'Имя не должно превышать 255 символов.',
+            'company.max' => 'Название компании не должно превышать 255 символов.',
+            'email.required' => 'Пожалуйста, укажите email.',
+            'email.email' => 'Введите корректный email адрес.',
+            'email.max' => 'Email не должен превышать 255 символов.',
+            'message.max' => 'Сообщение не должно превышать 5000 символов.',
+            'g-recaptcha-response.required' => 'Подтвердите, что вы не робот.',
+            'g-recaptcha-response.captcha' => 'Проверка reCAPTCHA не пройдена.',
+        ];
+
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'company' => 'nullable|string|max:255',
-            'email' => 'nullable|email|max:255',
+            'email' => 'required|email|max:255',
             'message' => 'nullable|string|max:5000',
-        ]);
+            'g-recaptcha-response' => 'required|captcha',
+            'no_company' => 'nullable|in:1',
+        ], $messages);
+
+        // Если стоит галочка "нет компании", обнуляем компанию
+        $company = $request->has('no_company') ? null : $request->company;
 
         $ip = $request->ip();
         $email = $request->email;
@@ -29,7 +45,7 @@ class ContactController extends Controller
             $seconds = RateLimiter::availableIn($rateLimitKey);
             return response()->json([
                 'success' => false,
-                'message' => "Слишком много запросов. Пожалуйста, подождите {$seconds} сек."
+                'message' => "Слишком много запросов. Подождите {$seconds} сек."
             ], 429);
         }
         
@@ -41,7 +57,7 @@ class ContactController extends Controller
             if ($emailRequestCount >= 3) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Достигнут лимит заявок для этого email. Пожалуйста, свяжитесь с нами по телефону.'
+                    'message' => 'Достигнут лимит заявок для этого email.'
                 ], 429);
             }
         }
@@ -49,27 +65,24 @@ class ContactController extends Controller
         try {
             $contactRequest = ContactRequest::create([
                 'name' => $request->name,
-                'company' => $request->company,
+                'company' => $company,
                 'email' => $email,
                 'message' => $request->message,
                 'ip_address' => $ip,
                 'status' => ContactRequest::STATUS_PENDING,
             ]);
         } catch (\Exception $e) {
+            \Log::error('Ошибка сохранения: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Ошибка при сохранении заявки.'
             ], 500);
         }
 
-        // Отправка email (если настроен SMTP)
         try {
-            $this->sendEmail($request, $contactRequest);
+            $this->sendEmail($request, $contactRequest, $company);
         } catch (\Exception $e) {
-            // Логируем ошибку, но не показываем пользователю
-            \Log::error('Ошибка отправки email: ' . $e->getMessage(), [
-                'contact_request_id' => $contactRequest->id
-            ]);
+            \Log::error('Ошибка отправки email: ' . $e->getMessage());
         }
 
         return response()->json([
@@ -78,72 +91,50 @@ class ContactController extends Controller
         ]);
     }
 
-    /**
-     * Отправка email уведомления
-     */
-    private function sendEmail(Request $request, ContactRequest $contactRequest)
+    private function sendEmail(Request $request, ContactRequest $contactRequest, $company)
     {
-        // Проверяем, что есть настройки SMTP
         if (!env('MAIL_HOST') || !env('MAIL_USERNAME') || !env('MAIL_PASSWORD')) {
-            return; // Пропускаем отправку если нет настроек
+            return;
         }
 
         $mail = new PHPMailer(true);
-
+        $mail->CharSet = 'UTF-8';
         $mail->isSMTP();
-        $mail->Host = env('MAIL_HOST', 'smtp.mail.ru');
+        $mail->Host = env('MAIL_HOST');
         $mail->SMTPAuth = true;
         $mail->Username = env('MAIL_USERNAME');
         $mail->Password = env('MAIL_PASSWORD');
-        $mail->SMTPSecure = env('MAIL_ENCRYPTION', 'ssl');
-        $mail->Port = env('MAIL_PORT', 465);
-        $mail->CharSet = 'UTF-8';
+        $mail->SMTPSecure = env('MAIL_ENCRYPTION');
+        $mail->Port = env('MAIL_PORT');
 
         $mail->setFrom(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME', 'ServiceName'));
+        $mail->addAddress(env('MAIL_TO_ADDRESS'));
         
-        // Основной получатель
-        $mail->addAddress(env('MAIL_TO_ADDRESS', 'info@servicename-group.ru'));
-        
-        // Отправляем копию заявителю, если указан email
         if ($request->email) {
             $mail->addReplyTo($request->email, $request->name);
         }
 
         $mail->isHTML(true);
-        $mail->Subject = 'Новая заявка №' . $contactRequest->id . ' с сайта ServiceName';
+        $mail->Subject = 'Новая заявка №' . $contactRequest->id;
 
-        $body = $this->buildEmailBody($request, $contactRequest);
-
-        $mail->Body = $body;
-        $mail->AltBody = strip_tags(str_replace(['<br>', '</p>'], ["\n", "\n\n"], $body));
-
-        $mail->send();
-    }
-
-    /**
-     * Формирование тела письма
-     */
-    private function buildEmailBody(Request $request, ContactRequest $contactRequest): string
-    {
-        $statusLabel = $contactRequest->getStatusLabel();
+        $companyName = $company ?: 'Не указана';
+        $messageText = $request->message ?: 'Не указано';
         
-        return "
+        $mail->Body = "
             <div style='font-family: Arial, sans-serif; max-width: 600px;'>
                 <h2 style='color: #1b2d42;'>Новая заявка с сайта</h2>
                 <div style='background: #f0f4f8; padding: 20px; border-radius: 4px;'>
                     <p><strong>Номер заявки:</strong> #{$contactRequest->id}</p>
-                    <p><strong>Статус:</strong> {$statusLabel}</p>
-                    <p><strong>Имя:</strong> " . htmlspecialchars($request->name) . "</p>
-                    <p><strong>Компания:</strong> " . htmlspecialchars($request->company ?: 'Не указана') . "</p>
-                    <p><strong>E-mail:</strong> " . htmlspecialchars($request->email ?: 'Не указан') . "</p>
-                    <p><strong>Сообщение:</strong><br>" . nl2br(htmlspecialchars($request->message ?: 'Не указано')) . "</p>
+                    <p><strong>Имя:</strong> {$request->name}</p>
+                    <p><strong>Компания:</strong> {$companyName}</p>
+                    <p><strong>E-mail:</strong> {$request->email}</p>
+                    <p><strong>Сообщение:</strong><br>{$messageText}</p>
                     <hr>
-                    <p style='color: #94a3b8; font-size: 12px;'>
-                        <small>IP: " . htmlspecialchars($contactRequest->ip_address) . "</small><br>
-                        <small>Заявка отправлена " . $contactRequest->created_at->format('d.m.Y H:i') . "</small>
-                    </p>
+                    <p style='color: #94a3b8; font-size: 12px;'>Заявка от {$contactRequest->created_at->format('d.m.Y H:i')}</p>
                 </div>
             </div>
         ";
+
+        $mail->send();
     }
 }
