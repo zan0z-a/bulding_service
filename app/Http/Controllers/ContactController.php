@@ -69,7 +69,7 @@ class ContactController extends Controller
                 'email' => $email,
                 'message' => $request->message,
                 'ip_address' => $ip,
-                'status' => ContactRequest::STATUS_PENDING,
+                'status' => ContactRequest::STATUS_NEW,
             ]);
         } catch (\Exception $e) {
             \Log::error('Ошибка сохранения: ' . $e->getMessage());

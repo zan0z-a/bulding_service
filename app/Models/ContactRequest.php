@@ -1,4 +1,5 @@
 <?php
+// app/Models/ContactRequest.php
 
 namespace App\Models;
 
@@ -16,21 +17,18 @@ class ContactRequest extends Model
         'admin_notes',
     ];
 
-    protected $casts = [
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-    ];
-
-    const STATUS_PENDING = 'pending';
+    const STATUS_NEW = 'new';
     const STATUS_IN_PROGRESS = 'in_progress';
+    const STATUS_WAITING = 'waiting';
     const STATUS_COMPLETED = 'completed';
 
     public static function getStatuses(): array
     {
         return [
-            self::STATUS_PENDING => 'На рассмотрении',
+            self::STATUS_NEW => 'Новое',
             self::STATUS_IN_PROGRESS => 'В работе',
-            self::STATUS_COMPLETED => 'Готово',
+            self::STATUS_WAITING => 'В ожидании',
+            self::STATUS_COMPLETED => 'Выполнено',
         ];
     }
 

@@ -15,11 +15,10 @@ return new class extends Migration
             $table->string('email')->nullable();
             $table->text('message')->nullable();
             $table->string('ip_address', 45)->nullable();
-            $table->string('status')->default('pending'); // pending, in_progress, completed
+            $table->string('status')->default('new'); // new, in_progress, waiting, completed
             $table->text('admin_notes')->nullable();
             $table->timestamps();
             
-            // Индексы для быстрого поиска
             $table->index('email');
             $table->index('ip_address');
             $table->index('status');

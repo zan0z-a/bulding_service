@@ -19,27 +19,35 @@ class AdminController extends Controller implements HasMiddleware
         ];
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $requests = ContactRequest::orderBy('created_at', 'desc')->get();
+        $status = $request->get('status');
+        
+        $requestsQuery = ContactRequest::orderBy('created_at', 'desc');
+        
+        if ($status && in_array($status, ['new', 'in_progress', 'waiting', 'completed'])) {
+            $requestsQuery->where('status', $status);
+        }
+        
+        $requests = $requestsQuery->get();
         $users = User::orderBy('created_at', 'desc')->get();
         
         $stats = [
-            'total_requests' => ContactRequest::count(),
-            'pending_requests' => ContactRequest::where('status', 'pending')->count(),
-            'in_progress_requests' => ContactRequest::where('status', 'in_progress')->count(),
-            'completed_requests' => ContactRequest::where('status', 'completed')->count(),
-            'total_users' => User::count(),
-            'admin_users' => User::where('role', 'admin')->count(),
+            'total' => ContactRequest::count(),
+            'new' => ContactRequest::where('status', 'new')->count(),
+            'in_progress' => ContactRequest::where('status', 'in_progress')->count(),
+            'waiting' => ContactRequest::where('status', 'waiting')->count(),
+            'completed' => ContactRequest::where('status', 'completed')->count(),
+            'users' => User::count(),
         ];
         
-        return view('admin.index', compact('requests', 'users', 'stats'));
+        return view('admin.index', compact('requests', 'users', 'stats', 'status'));
     }
 
     public function updateStatus(Request $request, $id)
     {
         $request->validate([
-            'status' => 'required|in:pending,in_progress,completed',
+            'status' => 'required|in:new,in_progress,waiting,completed',
         ]);
 
         $contactRequest = ContactRequest::findOrFail($id);
@@ -48,7 +56,6 @@ class AdminController extends Controller implements HasMiddleware
 
         return response()->json([
             'success' => true,
-            'message' => 'Статус обновлен',
             'status' => $contactRequest->status,
             'status_label' => $contactRequest->getStatusLabel(),
         ]);
@@ -62,9 +69,7 @@ class AdminController extends Controller implements HasMiddleware
 
     public function deleteRequest($id)
     {
-        $contactRequest = ContactRequest::findOrFail($id);
-        $contactRequest->delete();
-        
+        ContactRequest::findOrFail($id)->delete();
         return redirect()->route('admin.index');
     }
 }
