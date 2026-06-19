@@ -14,7 +14,6 @@ class ContactController extends Controller
 {
     public function send(Request $request)
     {
-        // Валидация
         $request->validate([
             'name' => 'required|string|max:255',
             'company' => 'nullable|string|max:255',
@@ -25,7 +24,6 @@ class ContactController extends Controller
         $ip = $request->ip();
         $email = $request->email;
         
-        // Проверка лимита: 1 запрос в минуту с одного IP
         $rateLimitKey = 'contact_request_ip:' . $ip;
         if (RateLimiter::tooManyAttempts($rateLimitKey, 1)) {
             $seconds = RateLimiter::availableIn($rateLimitKey);
@@ -35,10 +33,8 @@ class ContactController extends Controller
             ], 429);
         }
         
-        // Увеличиваем счетчик для IP
         RateLimiter::hit($rateLimitKey, 60);
 
-        // Проверка по email: максимум 3 заявки с одного email
         if ($email) {
             $emailRequestCount = ContactRequest::where('email', $email)->count();
             
@@ -50,7 +46,6 @@ class ContactController extends Controller
             }
         }
 
-        // Сохраняем заявку в БД
         try {
             $contactRequest = ContactRequest::create([
                 'name' => $request->name,

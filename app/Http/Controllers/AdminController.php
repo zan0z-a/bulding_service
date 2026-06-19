@@ -11,9 +11,6 @@ use Illuminate\Routing\Controllers\Middleware;
 
 class AdminController extends Controller implements HasMiddleware
 {
-    /**
-     * Middleware для контроллера
-     */
     public static function middleware(): array
     {
         return [
@@ -22,9 +19,6 @@ class AdminController extends Controller implements HasMiddleware
         ];
     }
 
-    /**
-     * Главная админ-панели
-     */
     public function index()
     {
         $requests = ContactRequest::orderBy('created_at', 'desc')->get();
@@ -42,9 +36,6 @@ class AdminController extends Controller implements HasMiddleware
         return view('admin.index', compact('requests', 'users', 'stats'));
     }
 
-    /**
-     * Обновление статуса заявки
-     */
     public function updateStatus(Request $request, $id)
     {
         $request->validate([
@@ -63,18 +54,12 @@ class AdminController extends Controller implements HasMiddleware
         ]);
     }
 
-    /**
-     * Просмотр деталей заявки
-     */
     public function showRequest($id)
     {
         $contactRequest = ContactRequest::findOrFail($id);
         return view('admin.request-detail', compact('contactRequest'));
     }
 
-    /**
-     * Удаление заявки
-     */
     public function deleteRequest($id)
     {
         $contactRequest = ContactRequest::findOrFail($id);

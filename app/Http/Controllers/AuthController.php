@@ -1,6 +1,4 @@
 <?php
-// app/Http/Controllers/AuthController.php
-
 namespace App\Http\Controllers;
 
 use App\Models\User;
@@ -31,7 +29,7 @@ class AuthController extends Controller
 
         if (Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
             $request->session()->regenerate();
-            return redirect('/');  // Без сообщения
+            return redirect('/'); 
         }
 
         throw ValidationException::withMessages([

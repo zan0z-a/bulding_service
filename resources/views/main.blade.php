@@ -1,6 +1,11 @@
+{{-- resources/views/main.blade.php --}}
 @extends('layouts.layout')
 
 @section('title', 'ServiceName — Поставки промышленного оборудования')
+
+@push('scripts')
+{!! NoCaptcha::renderJs() !!}
+@endpush
 
 @section('content')
 
@@ -75,7 +80,6 @@
         <div class="cat-card">
           <div class="cat-card-img">
             <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80" alt="Промышленные станки">
-            <!-- <span class="cat-card-tag">Популярное</span> -->
           </div>
           <div class="cat-card-body">
             <div class="cat-card-title">Промышленные станки</div>
@@ -316,29 +320,41 @@
       <div class="col-lg-6">
         <div class="form-card">
           <h3 style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--navy);letter-spacing:0.04em;margin-bottom:1.5rem;">Оставить заявку</h3>
-<form id="contactForm" novalidate>
-    @csrf
-    <div class="mb-3">
-        <div class="form-label-custom">Ваше имя *</div>
-        <input type="text" name="name" class="form-control-custom" placeholder="Иванов Иван Иванович" required>
-    </div>
-    <div class="mb-3">
-        <div class="form-label-custom">Компания</div>
-        <input type="text" name="company" class="form-control-custom" placeholder="ООО «Название»">
-    </div>
-    <div class="mb-3">
-        <div class="form-label-custom">E-mail</div>
-        <input type="email" name="email" class="form-control-custom" placeholder="mail@company.ru">
-    </div>
-    <div class="mb-4">
-        <div class="form-label-custom">Что вас интересует?</div>
-        <textarea name="message" class="form-control-custom" placeholder="Опишите потребность или прикрепите спецификацию..." rows="4"></textarea>
-    </div>
-    <button type="submit" class="btn-submit" id="submitBtn">Отправить заявку <i class="bi bi-send ms-2"></i></button>
-    <div class="success-toast" id="successToast"><i class="bi bi-check-circle me-2"></i>Заявка отправлена! Мы свяжемся с вами в течение 24 часов.</div>
-    <div class="error-toast" id="errorToast" style="display:none;background:#dc2626;color:white;padding:12px 20px;border-radius:4px;font-size:0.9rem;font-weight:600;margin-top:12px;"><i class="bi bi-exclamation-triangle me-2"></i><span id="errorMessage">Ошибка отправки. Позвоните нам: 8 800 999-99-99</span></div>
-    <p style="font-size:0.75rem;color:#94a3b8;margin-top:10px;">Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности</p>
-</form>
+          <form id="contactForm" novalidate>
+            @csrf
+            <div class="mb-3">
+              <div class="form-label-custom">Ваше имя *</div>
+              <input type="text" name="name" class="form-control-custom" placeholder="Иванов Иван Иванович" required>
+            </div>
+            <div class="mb-3">
+              <div class="form-label-custom">Компания</div>
+              <input type="text" name="company" id="companyInput" class="form-control-custom" placeholder="ООО «Название»">
+              <div class="form-check mt-2">
+                <input class="form-check-input" type="checkbox" name="no_company" id="noCompanyCheck" value="1">
+                <label class="form-check-label" for="noCompanyCheck" style="font-size: 0.85rem; color: #64748b; cursor: pointer;">
+                  У меня нет компании
+                </label>
+              </div>
+            </div>
+            <div class="mb-3">
+              <div class="form-label-custom">E-mail *</div>
+              <input type="email" name="email" class="form-control-custom" placeholder="mail@company.ru" required>
+            </div>
+            <div class="mb-4">
+              <div class="form-label-custom">Что вас интересует?</div>
+              <textarea name="message" class="form-control-custom" placeholder="Опишите потребность или прикрепите спецификацию..." rows="4"></textarea>
+            </div>
+            <div class="mb-3">
+              {!! NoCaptcha::display() !!}
+              @error('g-recaptcha-response')
+                <div class="invalid-feedback d-block">{{ $message }}</div>
+              @enderror
+            </div>
+            <button type="submit" class="btn-submit" id="submitBtn">Отправить заявку <i class="bi bi-send ms-2"></i></button>
+            <div class="success-toast" id="successToast"><i class="bi bi-check-circle me-2"></i>Заявка отправлена! Мы свяжемся с вами в течение 24 часов.</div>
+            <div class="error-toast" id="errorToast" style="display:none;background:#dc2626;color:white;padding:12px 20px;border-radius:4px;font-size:0.9rem;font-weight:600;margin-top:12px;"><i class="bi bi-exclamation-triangle me-2"></i><span id="errorMessage">Ошибка отправки. Позвоните нам: 8 800 999-99-99</span></div>
+            <p style="font-size:0.75rem;color:#94a3b8;margin-top:10px;">Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности</p>
+          </form>
         </div>
       </div>
       <div class="col-lg-6">
@@ -390,3 +406,86 @@
 </section>
 
 @endsection
+
+@push('scripts')
+<script>
+// Обработка чекбокса "У меня нет компании"
+document.getElementById('noCompanyCheck').addEventListener('change', function() {
+    var companyInput = document.getElementById('companyInput');
+    if (this.checked) {
+        companyInput.value = '';
+        companyInput.disabled = true;
+        companyInput.placeholder = 'Компания не указана';
+        companyInput.style.opacity = '0.5';
+        companyInput.style.cursor = 'not-allowed';
+    } else {
+        companyInput.disabled = false;
+        companyInput.placeholder = 'ООО «Название»';
+        companyInput.style.opacity = '1';
+        companyInput.style.cursor = 'text';
+    }
+});
+
+// Отправка формы
+document.getElementById('contactForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    var form = this;
+    var submitBtn = document.getElementById('submitBtn');
+    var successToast = document.getElementById('successToast');
+    var errorToast = document.getElementById('errorToast');
+    var errorMessage = document.getElementById('errorMessage');
+
+    successToast.style.display = 'none';
+    errorToast.style.display = 'none';
+
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Отправка...';
+
+    var formData = new FormData(form);
+
+    fetch('/contact/send', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+        }
+    })
+    .then(function(response) { return response.json(); })
+    .then(function(data) {
+        if (data.success) {
+            successToast.style.display = 'block';
+            form.reset();
+            // Сбрасываем чекбокс и поле компании
+            var companyInput = document.getElementById('companyInput');
+            var noCompanyCheck = document.getElementById('noCompanyCheck');
+            if (noCompanyCheck && noCompanyCheck.checked) {
+                noCompanyCheck.checked = false;
+                companyInput.disabled = false;
+                companyInput.placeholder = 'ООО «Название»';
+                companyInput.style.opacity = '1';
+                companyInput.style.cursor = 'text';
+            }
+        } else {
+            errorMessage.textContent = data.message || 'Ошибка отправки. Позвоните нам: 8 800 999-99-99';
+            errorToast.style.display = 'block';
+        }
+    })
+    .catch(function(error) {
+        errorMessage.textContent = 'Ошибка отправки. Позвоните нам: 8 800 999-99-99';
+        errorToast.style.display = 'block';
+    })
+    .finally(function() {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Отправить заявку <i class="bi bi-send ms-2"></i>';
+
+        setTimeout(function() {
+            successToast.style.display = 'none';
+            errorToast.style.display = 'none';
+        }, 6000);
+    });
+});
+</script>
+@endpush
